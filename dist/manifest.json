@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+
+  "name": "Screenshot App",
+  "description": "This extension allows you to easily take screenshots of inspirational things you find on the web.",
+  "version": "0.0.1",
+
+  "content_scripts": [{
+      "matches": ["<all_urls>"],
+      "css": ["styles.css"],
+      "js": ["content_script.js"],
+      "run_at": "document_start"
+  }],
+
+  "background": {
+      "scripts": ["eventPage.js"],
+      "persistent": false
+  },
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "Easily capture your inspiration!"
+  },
+  "permissions": [
+    "activeTab",
+    "<all_urls>"
+  ]
+}
