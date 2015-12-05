@@ -1,5 +1,4 @@
 (function () {
-
     var applicationId;
     var coordinates = {}; // The coordinates, width, height, etc. captured from the mouse will go in here.
     let EXTENSION_ACTIVE = false; // Determines whether the extension is on or off.
@@ -163,48 +162,22 @@
 
     function screenShotComplete(imageData) {
 
-        var canvas = document.createElement('canvas');
-        var context = canvas.getContext('2d');
-        var imageObj = new Image();
-        console.log("What are the coordinates?", coordinates);
+        const canvas = document.createElement('canvas'),
+              context = canvas.getContext('2d'),
+              imageObj = new Image();
 
         // draw cropped image
         imageObj.onload = () => {
-            var coordinatesWidth = coordinates.endX - coordinates.startX;
-            var coordinatesHeight = coordinates.endY - coordinates.startY;
 
-            var {startX, startY, endX, endY} = coordinates;
+            let coordinatesWidth = coordinates.endX - coordinates.startX;
+            let coordinatesHeight = coordinates.endY - coordinates.startY;
+
+            let {startX, startY, endX, endY} = coordinates;
 
             canvas.width = coordinatesWidth;
             canvas.height = coordinatesHeight;
 
             context.drawImage(imageObj, coordinates.startX, coordinates.startY, coordinatesWidth, coordinatesHeight, 0, 0, coordinatesWidth, coordinatesHeight);
-
-            /* if ( endX >= startX && endY >= startY) { // Dragging from Top left to bottom right
-                context.drawImage(imageObj, coordinates.startX, coordinates.startY, coordinatesWidth, coordinatesHeight, 0, 0, coordinatesWidth, coordinatesHeight);
-            } else if (endX <= startX && endY >= startY ) { // Dragging from top right to bottom left.
-
-                coordinatesWidth = coordinates.startX - coordinates.endX; // Reverse the way it's calculating the width
-                canvas.width = coordinatesWidth; // Set the new width of the canvas.
-                context.drawImage(imageObj, endX, startY, coordinatesWidth, coordinatesHeight, 0, 0, coordinatesWidth, coordinatesHeight);
-
-            } else if (endX >= startX && endY <= startY ) { // Dragging from bottom left to top right.
-
-                coordinatesHeight = coordinates.startY - coordinates.endY; // Reverse the way it's calculating the height.
-                canvas.height = coordinatesHeight;
-                context.drawImage(imageObj, startX, endY, coordinatesWidth, coordinatesHeight, 0, 0, coordinatesWidth, coordinatesHeight);
-
-            } else if (endX <= startX && endY <= startY) { // Dragging from bottom right to top left.
-
-                // Recalculate both the width and height.
-                coordinatesWidth = coordinates.startX - coordinates.endX;
-                coordinatesHeight = coordinates.startY - coordinates.endY;
-
-                canvas.width = coordinatesWidth;
-                canvas.height = coordinatesHeight;
-
-                context.drawImage(imageObj, endX, endY, coordinatesWidth, coordinatesHeight, 0, 0, coordinatesWidth, coordinatesHeight);
-            } */
 
             // Pass the cropped image into the next step.
             positionCroppedImage(canvas.toDataURL("image/png"));
@@ -216,7 +189,8 @@
     /* Positions the cropped image on the page and then animates it into the middle. */
     function positionCroppedImage(imageSource) {
 
-        croppedImage = createImage();
+        createImage();
+
 
         function createImage() {
             var image = new Image();
@@ -232,17 +206,67 @@
                 // image.style.top = coordinates.startY + "px";
                 // image.style.left = coordinates.startX + "px";
 
-                image.style.top = "0px";
-                image.style.left = "0px";
-
-                console.log("What are the coordinates?", coordinates);
+                image.style.top = coordinates.startY + "px";
+                image.style.left = coordinates.startX + "px";
 
                 // Place the image into the dom.
                 window.document.body.appendChild(image);
 
+                croppedImage = image;
+                positionElements();
             };
 
             image.src = imageSource;
+        }
+
+        /* Removes all border width from overlay and fades it to white. Positions the image in the middle of
+           the screen. */
+        function positionElements() {
+
+            let transform = 'translate3d(-50%,0,0) translateZ(0)';
+            let croppedImageTransform = "translateZ(0)";
+            let transition = "all 500ms cubic-bezier(0.455, 0.030, 0.515, 0.955)";
+
+            overlay.style.border = "none";
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+            overlay.style.webkitTransition = transition;
+            overlay.style.transition = transition;
+            // This will animate to white over the period of 1 second.
+            overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+
+            croppedImage.style.boxShadow = "5px 5px 10px rgba(0, 0, 0, 0.5)";
+            croppedImage.style.maxWidth = "90%";
+            croppedImage.style.maxHeight = "50%";
+
+            $(croppedImage).animate({
+                top: 10,
+                left: ( $(window).width() / 2 ) - ( $(croppedImage).outerWidth()  / 2 )
+            }, 250);
+
+            createAndPositionInputs();
+        }
+
+        function createAndPositionInputs() {
+
+
+            let transform = 'translate3d(-50%,0,0) translateZ(0)';
+            let transition = "all 500ms cubic-bezier(0.455, 0.030, 0.515, 0.955)";
+
+            var textArea = document.createElement('textarea');
+
+            textArea.style.position = "fixed";
+            textArea.style.top = (parseInt(croppedImage.style.top.split("px")[0], 10) + croppedImage.offsetHeight) + "px";
+            textArea.style.left = "50%";
+            textArea.style.transform = transform;
+            textArea.style.webkitTransform = transform;
+            textArea.style.zIndex = "2174889";
+            textArea.style.boxSizing = "border-box";
+            textArea.style.display = "block";
+
+            textArea.style.transition = transition;
+            textArea.style.webkitTransition = transition;
+
+            window.document.body.appendChild(textArea);
         }
     }
 
