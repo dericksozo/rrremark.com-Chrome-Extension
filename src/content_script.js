@@ -4,9 +4,12 @@
     let EXTENSION_ACTIVE = false; // Determines whether the extension is on or off.
     let ESC_KEY = 27; // The keycode for the escape key.
 
+    const CROSSHAIR_CLASS = "Screenshot--crossHair";
+
     let overlay, // The overlay that's on top of the page when capturing mouse coordinates and after putting
                 //  the cropped image on the page.
-        croppedImage; // The cropped image element.
+        croppedImage, // The cropped image element.
+        container;
 
     function captureMouseEvents() {
 
@@ -15,7 +18,27 @@
             EXTENSION_ACTIVE = true; // It's active, so don't turn it on anymore.
 
             overlay = createOverlay();
-            // var crossHair = createCrossHair();
+            container = cre('iframe', {
+                style: {
+                    // This is really just paranoia, but we want to be above
+                    //          *** ABSOLUTELY EVERYTHING. ***
+                    // If the content document has fixed elements with high z-indexes, well,
+                    // we just have to use z-indexes that are higher!
+                    // http://stackoverflow.com/questions/491052/mininum-and-maximum-value-of-z-index
+                    zIndex: 0x7FFFFFFF,
+                    boxSizing: 'border-box',
+                    top: '0',
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    margin: '0',
+                    padding: '0',
+                    border: 'none',
+                    background: 'transparent'
+                }
+            });
+
+            // var $crossHair = createCrossHair();
 
             var isMouseDown = false;
 
@@ -24,36 +47,32 @@
 
             /* Creating the Overlay element to be placed on the screen. */
             function createOverlay() {
-
-                var overlay = window.document.createElement('div');
+                var overlay = container.contentDocument.createElement('div');
                     overlay.style.position = 'fixed'; // allows it to move with scroll
-                    overlay.style.zIndex = '2174859';
                     overlay.style.boxSizing = "border-box";
-                    overlay.style.top = '0px';
-                    overlay.style.left = '0px';
-                    overlay.style.padding = '0px';
-                    overlay.style.margin = '0px';
-                    overlay.style.width = window.innerWidth + "px";
-                    overlay.style.height = window.innerHeight + "px";
+                    overlay.style.top = '0';
+                    overlay.style.left = '0';
+                    overlay.style.right = '0';
+                    overlay.style.bottom = '0';
+                    overlay.style.padding = '0';
+                    overlay.style.margin = '0';
+                    /* overlay.style.width = window.innerWidth + "px";
+                    overlay.style.height = window.innerHeight + "px"; */
                     overlay.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
 
-                window.document.body.appendChild(overlay);
-
+                container.contentDocument.body.appendChild(overlay);
                 return overlay;
             }
 
             /* function createCrossHair() {
-                var crossHair = window.document.createElement('div');
-                    crossHair.style.position = "fixed";
-                    crossHair.style.width = window.innerWidth + "px";
-                    crossHair.style.height = window.innerHeight + "px";
-                    crossHair.style.zIndex = "2174861";
 
-                    crossHair.classList.add("ScreenshotApp--crossHair");
+                var $crossHair = $("<div/>");
 
-                window.document.body.appendChild(crossHair);
+                $crossHair.addClass("ScreenshotApp--crossHair");
 
-                return crossHair;
+                $("body").append($crossHair);
+
+                return $crossHair;
             } */
 
             /* Events */
@@ -128,13 +147,8 @@
             /* This function takes care of removing elements and events if the user hits ESC. */
             function shutdown() {
 
-                // Remove event listeners from overlay.
-                overlay.addEventListener('mousedown', mouseDown, false);
-            	overlay.addEventListener('mousemove', mouseMove, false);
-            	overlay.addEventListener('mouseup', mouseUp, false);
-
-                // Remove overlay element from the document.
-                window.document.body.removeChild(overlay);
+                // Remove the iframe from the document
+                window.document.body.removeChild(container);
 
                 // Set the extension to false so we can open it again.
                 EXTENSION_ACTIVE = false;
@@ -241,9 +255,9 @@
             $(croppedImage).animate({
                 top: 10,
                 left: ( $(window).width() / 2 ) - ( $(croppedImage).outerWidth()  / 2 )
-            }, 250);
+            }, 250, "easeOutQuad");
 
-            createAndPositionInputs();
+            // createAndPositionInputs();
         }
 
         function createAndPositionInputs() {

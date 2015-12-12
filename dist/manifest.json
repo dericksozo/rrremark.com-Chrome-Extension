@@ -8,7 +8,7 @@
   "content_scripts": [{
       "matches": ["<all_urls>"],
       "css": ["styles.css"],
-      "js": ["bower_components/jquery-ui/jquery-ui.min.js", "bower_components/jquery/dist/jquery.min.js", "content_script.js"],
+      "js": ["vendor/cre.js", "bower_components/jquery/dist/jquery.min.js", "bower_components/jquery-ui/jquery-ui.min.js", "content_script.js"],
       "run_at": "document_start"
   }],
 
