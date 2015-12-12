@@ -17,7 +17,6 @@
 
             EXTENSION_ACTIVE = true; // It's active, so don't turn it on anymore.
 
-            overlay = createOverlay();
             container = cre('iframe', {
                 style: {
                     // This is really just paranoia, but we want to be above
@@ -27,6 +26,9 @@
                     // http://stackoverflow.com/questions/491052/mininum-and-maximum-value-of-z-index
                     zIndex: 0x7FFFFFFF,
                     boxSizing: 'border-box',
+                    position: 'fixed',
+                    width: '100%',
+                    height: '100%',
                     top: '0',
                     left: '0',
                     right: '0',
@@ -37,6 +39,10 @@
                     background: 'transparent'
                 }
             });
+
+            document.body.appendChild(container);
+
+            overlay = createOverlay();
 
             // var $crossHair = createCrossHair();
 
@@ -224,7 +230,7 @@
                 image.style.left = coordinates.startX + "px";
 
                 // Place the image into the dom.
-                window.document.body.appendChild(image);
+                container.contentDocument.body.appendChild(image);
 
                 croppedImage = image;
                 positionElements();
