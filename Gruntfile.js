@@ -9,8 +9,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "dist/content_script.js": "src/content_script.js",
-                    "dist/eventPage.js": "src/eventPage.js"
+                    "src/*.js": "dist/*.js"
                 }
             }
         },

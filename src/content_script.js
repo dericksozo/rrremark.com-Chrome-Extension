@@ -1,12 +1,12 @@
 (function () {
-    var applicationId;
-    var coordinates = {}; // The coordinates, width, height, etc. captured from the mouse will go in here.
-    let EXTENSION_ACTIVE = false; // Determines whether the extension is on or off.
-    let ESC_KEY = 27; // The keycode for the escape key.
 
-    const CROSSHAIR_CLASS = "Screenshot--crossHair";
+    var applicationId,
+        coordinates = {},// The coordinates, width, height, etc. captured from the mouse will go in here.
+        EXTENSION_ACTIVE = false, // Determines whether the extension is on or off.
+        ESC_KEY = 27, // The keycode for the escape key.
+        CROSSHAIR_CLASS = "Screenshot--crossHair";
 
-    let overlay, // The overlay that's on top of the page when capturing mouse coordinates and after putting
+    var overlay, // The overlay that's on top of the page when capturing mouse coordinates and after putting
                 //  the cropped image on the page.
         croppedImage, // The cropped image element.
         container;
@@ -46,10 +46,11 @@
 
             // var $crossHair = createCrossHair();
 
-            var isMouseDown = false;
-
-            var startX, startY;
-            var endX, endY;
+            var isMouseDown = false,
+                startX,
+                startY,
+                endX,
+                endY;
 
             /* Creating the Overlay element to be placed on the screen. */
             function createOverlay() {
@@ -70,17 +71,6 @@
                 return overlay;
             }
 
-            /* function createCrossHair() {
-
-                var $crossHair = $("<div/>");
-
-                $crossHair.addClass("ScreenshotApp--crossHair");
-
-                $("body").append($crossHair);
-
-                return $crossHair;
-            } */
-
             /* Events */
             function mouseDown(e) {
                 isMouseDown = true;
@@ -95,9 +85,6 @@
 
                     endY = e.clientY;
                     endX = e.clientX;
-
-                    /* crossHair.style.left = e.clientX;
-                    crossHair.style.top = e.clientY; */
 
                     overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
                     overlay.style.borderColor = "rgba(0, 0, 0, 0.3)";
@@ -167,8 +154,8 @@
         	overlay.addEventListener('mouseup', mouseUp, false);
 
             /* Listening for the ESC key being pressed. */
-            window.document.addEventListener('keydown', (e) => {
-                let key = e.keyCode || e.which;
+            window.document.addEventListener('keydown', function (e) {
+                var key = e.keyCode || e.which;
 
                 if ( key === ESC_KEY) {
                     console.log("You pressed the escape key!");
@@ -182,17 +169,20 @@
 
     function screenShotComplete(imageData) {
 
-        const canvas = document.createElement('canvas'),
-              context = canvas.getContext('2d'),
-              imageObj = new Image();
+        var canvas = document.createElement('canvas'),
+            context = canvas.getContext('2d'),
+            imageObj = new Image();
 
         // draw cropped image
-        imageObj.onload = () => {
+        imageObj.onload = function () {
 
-            let coordinatesWidth = coordinates.endX - coordinates.startX;
-            let coordinatesHeight = coordinates.endY - coordinates.startY;
+            var coordinatesWidth = coordinates.endX - coordinates.startX,
+                coordinatesHeight = coordinates.endY - coordinates.startY;
 
-            let {startX, startY, endX, endY} = coordinates;
+            var startX = coordinates.startX,
+                startY = coordinates.startY,
+                endX = coordinates.endX,
+                endY = coordinates.endY;
 
             canvas.width = coordinatesWidth;
             canvas.height = coordinatesHeight;
@@ -216,7 +206,7 @@
             var image = new Image();
 
             // draw cropped image
-            image.onload = () => {
+            image.onload = function () {
 
                 image.style.position = "fixed"; // allows it to move with scroll
                 image.style.zIndex = "2174869";
@@ -243,9 +233,9 @@
            the screen. */
         function positionElements() {
 
-            let transform = 'translate3d(-50%,0,0) translateZ(0)';
-            let croppedImageTransform = "translateZ(0)";
-            let transition = "all 500ms cubic-bezier(0.455, 0.030, 0.515, 0.955)";
+            var transform = 'translate3d(-50%,0,0) translateZ(0)';
+            var croppedImageTransform = "translateZ(0)";
+            var transition = "all 500ms cubic-bezier(0.455, 0.030, 0.515, 0.955)";
 
             overlay.style.border = "none";
             overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
@@ -269,8 +259,8 @@
         function createAndPositionInputs() {
 
 
-            let transform = 'translate3d(-50%,0,0) translateZ(0)';
-            let transition = "all 500ms cubic-bezier(0.455, 0.030, 0.515, 0.955)";
+            var transform = 'translate3d(-50%,0,0) translateZ(0)',
+                transition = "all 500ms cubic-bezier(0.455, 0.030, 0.515, 0.955)";
 
             var textArea = document.createElement('textarea');
 
