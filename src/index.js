@@ -6,162 +6,37 @@
         ESC_KEY = 27, // The keycode for the escape key.
         CROSSHAIR_CLASS = "Screenshot--crossHair";
 
-    var overlay, // The overlay that's on top of the page when capturing mouse coordinates and after putting
-                //  the cropped image on the page.
-        croppedImage, // The cropped image element.
-        container;
+    var overlay = require("./modules/OverlayHighlighter.js"),
+        filterSelect = require("./modules/FilterSelect.js"),
+        croppedImage; // The cropped image element.
+
+
 
     function captureMouseEvents() {
 
         if ( ! EXTENSION_ACTIVE) {
 
+            overlay();
+
             EXTENSION_ACTIVE = true; // It's active, so don't turn it on anymore.
 
-            container = cre('iframe', {
-                style: {
-                    // This is really just paranoia, but we want to be above
-                    //          *** ABSOLUTELY EVERYTHING. ***
-                    // If the content document has fixed elements with high z-indexes, well,
-                    // we just have to use z-indexes that are higher!
-                    // http://stackoverflow.com/questions/491052/mininum-and-maximum-value-of-z-index
-                    zIndex: 0x7FFFFFFF,
-                    boxSizing: 'border-box',
-                    position: 'fixed',
-                    width: '100%',
-                    height: '100%',
-                    top: '0',
-                    left: '0',
-                    right: '0',
-                    bottom: '0',
-                    margin: '0',
-                    padding: '0',
-                    border: 'none',
-                    background: 'transparent'
-                }
-            });
-
-            document.body.appendChild(container);
-
-            overlay = createOverlay();
-
-            // var $crossHair = createCrossHair();
-
-            var isMouseDown = false,
-                startX,
-                startY,
-                endX,
-                endY;
-
-            /* Creating the Overlay element to be placed on the screen. */
-            function createOverlay() {
-                var overlay = container.contentDocument.createElement('div');
-                    overlay.style.position = 'fixed'; // allows it to move with scroll
-                    overlay.style.boxSizing = "border-box";
-                    overlay.style.top = '0';
-                    overlay.style.left = '0';
-                    overlay.style.right = '0';
-                    overlay.style.bottom = '0';
-                    overlay.style.padding = '0';
-                    overlay.style.margin = '0';
-                    /* overlay.style.width = window.innerWidth + "px";
-                    overlay.style.height = window.innerHeight + "px"; */
-                    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
-
-                container.contentDocument.body.appendChild(overlay);
-                return overlay;
-            }
-
-            /* Events */
-            function mouseDown(e) {
-                isMouseDown = true;
-
-                startX = e.clientX;
-                startY = e.clientY;
-            }
-
-            function mouseMove(e) {
-
-                if (isMouseDown) {
-
-                    endY = e.clientY;
-                    endX = e.clientX;
-
-                    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                    overlay.style.borderColor = "rgba(0, 0, 0, 0.3)";
-                    overlay.style.borderStyle = "solid";
-
-                    /* Change how the borderWidth is being calculated based on the x and y values. */
-                    if ( endX >= startX && endY >= startY) {
-
-                        // Appropriately normalize the coordinates so have an easier time cropping the image later.
-                        coordinates.startX = startX;
-                        coordinates.endX = endX;
-                        coordinates.startY = startY;
-                        coordinates.endY = endY;
-
-                        overlay.style.borderWidth = startY + "px " + (window.innerWidth - endX) + "px " + (window.innerHeight - endY) + "px " + startX + "px";
-
-                    } else if (endX <= startX && endY >= startY ){
-
-                        coordinates.startX = endX;
-                        coordinates.endX = startX;
-                        coordinates.startY = startY;
-                        coordinates.endY = endY;
-
-                        overlay.style.borderWidth = startY + "px " + (window.innerWidth - startX) + "px " + (window.innerHeight - endY) + "px " + endX + "px";
-                    } else if (endX >= startX && endY <= startY ) {
-
-                        coordinates.startX = startX;
-                        coordinates.endX = endX;
-                        coordinates.startY = endY;
-                        coordinates.endY = startY;
-
-                        overlay.style.borderWidth = endY + "px " + (window.innerWidth - endX) + "px " + (window.innerHeight - startY) + "px " + startX + "px";
-                    } else if (endX <= startX && endY <= startY) {
-
-                        coordinates.startX = endX;
-                        coordinates.endX = startX;
-                        coordinates.startY = endY;
-                        coordinates.endY = startY;
-
-                        overlay.style.borderWidth = endY + "px " + (window.innerWidth - startX) + "px " + (window.innerHeight - startY) + "px " + endX + "px";
-                    }
-
-                }
-            }
-
-            function mouseUp(e) {
-                isMouseDown = false;
-
-                console.log("Mouse up, now we're about to fire the chrome.runtime.sendMessage function.");
-                chrome.runtime.sendMessage(applicationId, {action: "takeScreenshot"});
-            }
 
             /* This function takes care of removing elements and events if the user hits ESC. */
             function shutdown() {
 
-                // Remove the iframe from the document
-                window.document.body.removeChild(container);
+                $(document).trigger("rrremark:shutdown");
 
                 // Set the extension to false so we can open it again.
                 EXTENSION_ACTIVE = false;
 
             }
 
-            /* Set up the events on overlay. */
-            overlay.addEventListener('mousedown', mouseDown, false);
-        	overlay.addEventListener('mousemove', mouseMove, false);
-        	overlay.addEventListener('mouseup', mouseUp, false);
-
             /* Listening for the ESC key being pressed. */
             window.document.addEventListener('keydown', function (e) {
                 var key = e.keyCode || e.which;
-
                 if ( key === ESC_KEY) {
-                    console.log("You pressed the escape key!");
                     shutdown();
                 }
-
             }, false);
         }
 
@@ -194,6 +69,8 @@
         };
 
         imageObj.src = imageData;
+
+        console.log("imageData", imageData);
     }
 
     /* Positions the cropped image on the page and then animates it into the middle. */

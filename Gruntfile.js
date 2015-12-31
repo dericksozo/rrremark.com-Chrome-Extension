@@ -3,24 +3,42 @@ module.exports = function(grunt) {
     require("load-grunt-tasks")(grunt); // npm install --save-dev load-grunt-tasks
 
     grunt.initConfig({
-        "babel": {
+        browserify: {
             options: {
-                sourceMap: true
+                browserifyOptions: {
+                    debug: true
+                },
+                "transform": [
+                    [
+                        "hbsfy",
+                        {
+                            "extensions": [
+                                "hbs"
+                            ],
+                            "precompilerOptions": {
+                                "knownHelpersOnly": true,
+                                "knownHelpers": {
+                                    "myUltimateHelper": true
+                                }
+                            }
+                        }
+                    ]
+                ]
             },
             dist: {
                 files: {
-                    "src/*.js": "dist/*.js"
+                    'dist/content_script.js': ['src/index.js'],
+                    'dist/eventPage.js': ['src/eventPage.js']
                 }
             }
         },
         watch: {
-            babel: {
-                // We watch and compile sass files as normal but don't live reload here
+            browserify: {
                 files: ['src/*.js'],
-                tasks: ['babel'],
+                tasks: ['browserify'],
             },
         }
     });
 
-    grunt.registerTask("default", ["babel", "watch"]);
+    grunt.registerTask("default", ["browserify", "watch"]);
 };

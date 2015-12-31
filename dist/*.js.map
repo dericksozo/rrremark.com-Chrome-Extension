@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/FilterSelect.js"],"names":[],"mappings":";;;;;;kBAAe,YAAY;AACvB,SAAK,CAAC,aAAa,CAAC,CAAC;CACxB","file":"*.js","sourcesContent":["export default function () {\n    alert(\"Hello World\");\n}"]}
