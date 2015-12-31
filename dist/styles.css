@@ -1,12 +1,3 @@
-.ScreenshotApp--crossHair::before,
-.ScreenshotApp--crossHair::after {
-    border-right: 1px solid white;
-    border-bottom: 1px solid white;
-    left: -100%;
-    top: -100%;
-}
-
-.ScreenshotApp--crossHair::after {
-    left: 0;
-    top: 0;
+body {
+    min-height: 100%;
 }

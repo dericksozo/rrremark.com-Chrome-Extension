@@ -1,0 +1,154 @@
+.Overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2147483647;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Remark Selector */
+/* Styles */
+
+.rrremarkSelector {
+  border: 1px solid blue;
+  max-width: 250px;
+  
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.rrremarkSelector[data-state~="closed"] .rrremarkSelector--container {
+  display: none;
+}
+
+.rrremarkSelector[data-state~="closed"] .rrremarkSelector--option-selected {
+  border: none;
+}
+
+.rrremarkSelector--searchInput {
+  border: none;
+  background: none;
+  
+  outline: 0;
+}
+
+.rrremarkSelector--option,
+.rrremarkSelector--search {
+  position: relative;
+  
+  font-size: 1rem;
+  color: blue;
+  
+  border-bottom: 1px solid blue;
+  
+  padding: 0.5rem 0.75rem;
+}
+
+.rrremarkSelector--search {
+  padding-right: 1.6rem;
+}
+
+.rrremarkSelector--option:last-child,
+.noBorder {
+  border: none;
+}
+
+.rrremarkSelector--option-selected::after,
+.rrremarkSelector--search::after,
+.rrremarkSelector--search::before,
+.rrremarkSelector--option[data-state~="highlighted"]::after,
+.rrremarkSelector--option[data-selected~="selected"]::after {
+  position: absolute;
+  content: " ";
+  display: block;
+  
+  width: 0; 
+	height: 0; 
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	
+	border-top: 10px solid #0000FF;
+  
+  right: 0.75rem;
+  top: 50%;
+  
+  transform: translate3d(0, -50%, 0);
+}
+
+.rrremarkSelector--search::before,
+.rrremarkSelector--search::after {
+  border: none;
+}
+
+.rrremarkSelector--search::after {
+  border: none;
+  width: 1px;
+  height: 0.75rem;
+  background-color: blue;
+  
+  right: 1.05rem;
+  
+  top: 60%;
+  transform: translate3d(0, -60%, 0);
+}
+
+.rrremarkSelector--search.noSearchResults::after {
+  top: 24%;
+  -webkit-transform: translate3d(0, -20%, 0);
+  transform: translate3d(0, -20%, 0);
+  height: 1.3rem;
+}
+
+.rrremarkSelector--search.noSearchResults::before {
+  background-color: transparent;
+  
+  top: 35%;
+  -webkit-transform: translate3d(0, -20%, 0);
+  transform: translate3d(0, -35%, 0);
+}
+
+.rrremarkSelector--search::before {
+  z-index: 2;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 1px solid blue;
+  background-color: white;
+  top: 20%;
+  
+  transform: translate3d(0, -20%, 0);
+}
+
+.rrremarkSelector--option[data-state~="highlighted"]::after,
+.rrremarkSelector--option[data-selected~="selected"]::after {
+  background-color: #fff; 
+  
+  width: 0.75rem;
+  height: 0.75rem;
+  
+  border: none;
+  border-radius: 50%;
+}
+
+.rrremarkSelector--option[data-selected~="selected"]::after {
+  background-color: blue;
+}
+
+.rrremarkSelector--option[data-selected~="selected"][data-state~="highlighted"]::after {
+  background-color: #fff;
+}
+
+.rrremarkSelector--option[data-state~="highlighted"] {
+  background-color: blue;
+  color: white;
+}
+
+.highlightSearchValue {
+  font-weight: 700;
+}
+
+.hidden {
+  display: none;
+}

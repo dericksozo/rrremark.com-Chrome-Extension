@@ -8,10 +8,14 @@
   "content_scripts": [{
       "matches": ["<all_urls>"],
       "css": ["styles.css"],
-      "js": ["content_script.js"],
+      "js": ["bower_components/jquery/dist/jquery.min.js", "content_script.js"],
       "run_at": "document_start"
   }],
-
+  "web_accessible_resources": [
+    "views/*.html",
+    "views/*.css",
+    "views/*.js"
+  ],
   "background": {
       "scripts": ["eventPage.js"],
       "persistent": false
